@@ -3,7 +3,7 @@ import SparqlClient from './components/SparqlClient';
 import './App.css'
 
 function App() {
-  const sparqlClientService = new SparqlClientService(process.env.REACT_APP_SPARQL_ENDPOINT || ''); 
+  const sparqlClientService = new SparqlClientService(import.meta.env.VITE_REACT_APP_SPARQL_ENDPOINT || ''); 
 
   return (
     <>
