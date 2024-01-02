@@ -16,7 +16,7 @@ export function AppRouter() {
   const availableRoutes = useMemo((): IRoute[] => {
     const routes: IRoute[] = [];
     routes.push(...PublicRoutes);
-    routes.push({ path: "*", Component: () => <Navigate to="/MainFeed" /> });
+    routes.push({ path: "*", Component: () => <Navigate to="/" /> });
 
     // if (isAuthenticated) {
     //   routes.push(...CommonUserRoutes);
