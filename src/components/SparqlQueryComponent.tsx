@@ -8,20 +8,46 @@ const SparqlQueryComponent: React.FC = () => {
   useEffect(() => {
     const runQuery = async () => {
       const query = `
-      PREFIX ex: <http://example.org/media>
-
-      SELECT ?movie ?title ?category ?description ?image ?director ?actor
+      PREFIX ex: <http://example.org/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?item ?type ?title ?image ?synopsis ?year ?artist ?category
       WHERE {
-        GRAPH <http://13.49.69.191/movies> {
-          ?movie rdf:type ex:Movie ;
-                ex:title ?title ;
-                ex:MovieCategory ?category ;
-                ex:synopsis ?description ;
-                ex:image ?image ;
-                ex:MovieDirector ?director ;
-                ex:MovieActor ?actor .
+        {
+          GRAPH <http://13.49.69.191/movies> {
+            ?item rdf:type ex:Movie ;
+                   ex:title ?title ;
+                   ex:image ?image ;
+                   ex:synopsis ?synopsis ;
+                   ex:year ?year .
+            BIND("Movie" AS ?type)
+          }
+        } UNION {
+          GRAPH <http://13.49.69.191/songs> {
+            ?item rdf:type ex:Song ;
+                   ex:title ?title ;
+                   ex:image ?image ;
+                   ex:synopsis ?synopsis .
+            BIND("Song" AS ?type)
+          }
+        } UNION {
+          GRAPH <http://13.49.69.191/books> {
+            ?item rdf:type ex:Book ;
+                   ex:title ?title ;
+                   ex:image ?image ;
+                   ex:synopsis ?synopsis .
+            BIND("Book" AS ?type)
+          }
+        } UNION {
+          GRAPH <http://13.49.69.191/videogames> {
+            ?item rdf:type ex:Videogame;
+                   ex:title ?title ;
+                   ex:image ?image ;
+                   ex:synopsis ?synopsis .
+            BIND("Videogame" AS ?type)
+          }
         }
-      }
+      }      
       `;
 
       try {
@@ -29,13 +55,11 @@ const SparqlQueryComponent: React.FC = () => {
 
         // Transform RDF data to match the 'media' array format
         const transformedData = result.results.bindings.map((binding: any) => ({
-          movie: binding.movie.value,
+          item: binding.item.value,
           title: binding.title.value,
-          category: binding.category.value,
-          description: binding.description.value,
+          description: binding.synopsis.value,
           image: binding.image.value,
-          director: binding.director.value,
-          actor: binding.actor.value,
+          type: binding.type.value,
           // Add other properties as needed
         }));
 
@@ -50,16 +74,14 @@ const SparqlQueryComponent: React.FC = () => {
 
   return (
     <div>
-      <h2>SPARQL Query Results:</h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {mediaData.map((item, index) => (
           <MediaCard
             key={index}
             title={item.title}
-            category={item.category}
             description={item.description}
-            // Add other properties as needed
             image={item.image}
+            type={item.type}
           />
         ))}
       </div>
