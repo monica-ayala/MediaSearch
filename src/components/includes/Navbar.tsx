@@ -2,6 +2,9 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import SearchBar from '../SearchBar'
+import { FaFilter } from "react-icons/fa6";
+import { useState } from 'react';
+import SearchModal from '../SearchModal';
 
 const navigation = [
   { name: 'Recomended', href: '#', current: true },
@@ -14,7 +17,17 @@ function classNames(...classes: string[]) {
 }
 
 export default function Example() {
+
+  const [openModal, setOpenModal] = useState(false);
+  const [email, setEmail] = useState('');
+
+  function onCloseModal() {
+    setOpenModal(false);
+    setEmail('');
+  }
+
   return (
+    <>
     <Disclosure as="nav" className="bg-gray-800 p-2">
       {({ open }:any) => (
         <>
@@ -62,8 +75,9 @@ export default function Example() {
               </div>
               <div className='w-1/2'>
                   <div className='hidden sm:block'><SearchBar/></div>
-                  </div>
+              </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <button onClick={() => setOpenModal(true)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-nonefont-medium rounded-lg text-sm p-4 mr-4 dark:bg-blue-600 dark:hover:bg-blue-700"> <FaFilter/> </button>
                 <button
                   type="button"
                   className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -154,5 +168,7 @@ export default function Example() {
         </>
       )}
     </Disclosure>
+    <SearchModal openModal={openModal} onCloseModal={onCloseModal} email={email} setEmail={setEmail}/>
+    </>
   )
 }
